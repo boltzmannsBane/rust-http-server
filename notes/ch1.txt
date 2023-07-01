@@ -1,0 +1,39 @@
+we want our application to:
+  be highly available (run in an error-prone environments)
+  allow us to continuously update it
+  handle dynamic workloads
+
+measure load and respond to it
+instrtument the application to collect logs, traces and metrics to observe our system
+
+to continuosly update, we need CI 
+ci steps includes running tests, formatting, linting, code coverage
+also audits
+
+(nothing on dynamic workloads)
+
+define a problem you want to solve. to better define the problem, 
+use user stories.
+```
+As a ... \n
+I want to ... \n
+So that ... \n
+```
+
+the user stories we're implementing: 
+ - as a user, i want to subscribe,
+   so that email updates about new contents on the blod
+ - as a blog author, i want to send email updates to the subscribers,
+   so that i can notify them about new content
+
+creating the server:
+
+transport level concerns - communication specifics (running port, allowed number of concurrent requests, TLS, etc)
+
+actix uses tokyo macro that wraps the main function and allows it to be async. 
+
+black box testing refers to the practice of examining the endpoint's outputs given some inputs, without knowing the details
+of how the API operates. an example of that would be spawning the application and querying it through HTTP.
+
+you could either write your tests right under the code (with rust's 'embedded tests' module) -- useful for testing private structs and other non-public facing functionality
+or you could make your test suite an independent library -- better for black box testint
