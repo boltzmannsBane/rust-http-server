@@ -26,7 +26,7 @@ the user stories we're implementing:
  - as a blog author, i want to send email updates to the subscribers,
    so that i can notify them about new content
 
-creating the server:
++++creating the server:
 
 transport level concerns - communication specifics (running port, allowed number of concurrent requests, TLS, etc)
 
@@ -37,3 +37,24 @@ of how the API operates. an example of that would be spawning the application an
 
 you could either write your tests right under the code (with rust's 'embedded tests' module) -- useful for testing private structs and other non-public facing functionality
 or you could make your test suite an independent library -- better for black box testint
+
+tokil::spawn() will spawn a concurrent background process (we don't have to wait until it returns). when tokio runtime exits, all tasks spawned on it get shut down as well.
+
+we don't know which ports on the machine a free or taken. port :0 is a special case in which the OS will find a free port for you on each test case.
+you can bind, capture the port number through TcpListener::local_addr 
+
+tests check for both success and rejection cases. make sure the data supplied is appropriate, otherwise return 400 BAD REQUEST
+
++++deciding on db & driver:
+
+- compile-time safety: does your driver notify you of errors on runtime or compiletime?
+- query interface (sql specific): does the driver allow writing pure sql or instead makes you use a proprietary ORM?
+- async IO support: "threads are for working in parallel, async is for waiting in parallel", wil the driver
+block new requests before the previous one completes or does it allow to wait and perform new requests in the meanwhile?
+
+to check for data persistence/side-effects after a post request, you can leverage existing GET endpoints (if available);
+if that's not an option, query from the test case directly. do not create new routes just to support tests.
+
+PgConnection is the connection entrypoint. It implements Connection trait which has a 'connect' method which takes 
+a connection string and asynchronously returns a connection or error.
+The connection strings comes from config.yaml with the help of the 'config' crate.

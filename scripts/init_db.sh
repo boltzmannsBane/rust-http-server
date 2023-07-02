@@ -26,18 +26,26 @@ DB_NAME="${POSTGRES_DB:=newsletter}"
 DB_PORT="${POSTGRES_PORT:=5432}"
 # Check if a custom host has been set, otherwise default to 'localhost'
 DB_HOST="${POSTGRES_HOST:=localhost}"
+
+#check if there's already a container running on the specified port
+is_running=$(docker ps --format '{{.Image}} {{.Ports}}' | grep -w "${POSTGRES_PORT}" | grep -w "postgres" &> /dev/null && echo "true" || echo "false")
+
 # Launch postgres using Docker
 # Allow to skip Docker if a dockerized Postgres database is already running
-if [[ -z "${SKIP_DOCKER}" ]]
-    then
-        docker run \
-            -e POSTGRES_USER=${DB_USER} \
-            -e POSTGRES_PASSWORD=${DB_PASSWORD} \
-            -e POSTGRES_DB=${DB_NAME} \
-            -p "${DB_PORT}":5432 \
-            -d postgres \
-            postgres -N 1000
-            # ^ Increased maximum number of connections for testing purposes
+if [[ -z "$is_running" ]]; then
+  echo "Spinning up a new container..."
+  docker run \
+      -e POSTGRES_USER=${DB_USER} \
+      -e POSTGRES_PASSWORD=${DB_PASSWORD} \
+      -e POSTGRES_DB=${DB_NAME} \
+      -p "${DB_PORT}":5432 \
+      -d postgres \
+      postgres -N 1000
+      # ^ Increased maximum number of connections for testing purposes
+
+else 
+  echo "Container already exists"
+
 fi
 
 # Keep pinging Postgres until it's ready to accept commands
