@@ -58,3 +58,7 @@ if that's not an option, query from the test case directly. do not create new ro
 PgConnection is the connection entrypoint. It implements Connection trait which has a 'connect' method which takes 
 a connection string and asynchronously returns a connection or error.
 The connection strings comes from config.yaml with the help of the 'config' crate.
+
+We need a clonable reference to PgConnection, so we wrap in in an Arc-like web::Data and clone that reference instead, saving it in the application state. 
+but then we discover that the reference needs to be mutable (have Executor trait) to satisfy sqlx requirements. which is a issue, because web::Data won't let us have a mutable reference.
+thus we arrive at PgPool -- a pool of connections with internal mutability magic, reference to which we end up passing to the application state.

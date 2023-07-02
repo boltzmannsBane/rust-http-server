@@ -10,19 +10,15 @@ pub struct TestApp {
 }
 
 async fn spawn_app() -> TestApp {
-    // bind to port
     let listener = TcpListener::bind("127.0.0.1:0").expect("Failed to bind random port");
-    // retrieve the port
+    // We retrieve the port assigned to us by the OS
     let port = listener.local_addr().unwrap().port();
     let address = format!("http://127.0.0.1:{}", port);
-    // read configuration && write a random db name
+
     let mut configuration = get_configuration().expect("Failed to read configuration.");
     configuration.database.database_name = Uuid::new_v4().to_string();
-
-    // connect
     let connection_pool = configure_database(&configuration.database).await;
 
-    // run the app
     let server = run(listener, connection_pool.clone()).expect("Failed to bind address");
     let _ = tokio::spawn(server);
     TestApp {
