@@ -1,0 +1,13 @@
+Telemetry
+
+we need to instrument our application to collect telemetry data.
+telemetry data provides *observability*, which in turn gives us ability to troubleshoot when something unexpected happens.
+
+Logs are plaintext data that describes an occurence. 'log' crate can be used for logging
+log provides 5 macros, ordered from least to most severe: trace, debug, info, warn and error.
+
+actix-web also comes bundled with a logger
+
+ask yourself if logs are a proper abstraction for your needs.
+'tracing' crate expands on logging-based observability by capturing the entire span of the executing program.
+ 
