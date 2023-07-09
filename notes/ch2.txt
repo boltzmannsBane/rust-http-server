@@ -10,4 +10,8 @@ actix-web also comes bundled with a logger
 
 ask yourself if logs are a proper abstraction for your needs.
 'tracing' crate expands on logging-based observability by capturing the entire span of the executing program.
+
+give yourself an option to skip tracing when you're running tests.
+remember to explicitly leave out sensitive data from the logs (passwords, etc)
+
  
