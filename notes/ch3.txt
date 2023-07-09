@@ -7,5 +7,9 @@ We can use sqlx's "offline" feature to prepare the macro data before build. we c
 Another issue, again related to sqlx, is that it again needs the working connection at runtime or it will crash. 
 We can fix this by using the "lazy" feature to only attempt to connect to the DB on first real query.
 
+docker container builds for rust projects may take a lot of time to compile, and the resulting images take up a lot of storage. 
+there's a few optimizations that may help shave off time/size by using docker's layer caching:
+- use dockerignore to avoid certain file changes from breaking build cache.
+- build your dependencies separate from the project (copy a lockfile and build). that way you don't have to re-build them if there's no changes in dependency tree
 
-
+you can use environment variables to inject secrets to the application at runtime
