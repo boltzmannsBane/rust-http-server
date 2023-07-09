@@ -1,0 +1,11 @@
+Dockerizing an application allows you to ship the application together with the environment it needs to run properly
+
+While that sounds great, it introduces a couple friction points that need to be straightened out to complete the containerization process.
+
+For example, for our particular setup, sqlx needs a working connection to a postgres instance at compile time, which we can't provide during the docker build process.
+We can use sqlx's "offline" feature to prepare the macro data before build. we can check the up-to-dateness of this data on our CI step.
+Another issue, again related to sqlx, is that it again needs the working connection at runtime or it will crash. 
+We can fix this by using the "lazy" feature to only attempt to connect to the DB on first real query.
+
+
+
