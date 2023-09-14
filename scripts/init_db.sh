@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# refactor this
 set -x
 set -eo pipefail
 
