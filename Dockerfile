@@ -12,7 +12,7 @@ COPY --from=planner /app/recipe.json recipe.json
 # Build our project dependencies, not our application!
 RUN cargo chef cook --release --recipe-path recipe.json
 COPY . .
-ENV SQLX_OFFLINE true
+ENV SQLX_OFFLINE false
 # Build our project
 RUN cargo build --release --bin zero2prod
 
